@@ -27,25 +27,30 @@
 
 import config as cf
 from DISClib.ADT import list as lt
+import time
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import insertionsort as ins
+from DISClib.Algorithms.Sorting import mergesort as mer
+from DISClib.Algorithms.Sorting import quicksort as qu
+
 assert cf
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
-def newCatalog():
+def newCatalog(tad_list_type):
     """
     Inicializa el catálogo de libros. Crea una lista vacia para guardar
     todos los libros, adicionalmente, crea una lista vacia para los autores,
     una lista vacia para los generos y una lista vacia para la asociación
     generos y libros. Retorna el catalogo inicializado.
     """
-    catalog = {'artwork': None,
-               'artist': None,}
+    catalog = {'artworks': None,
+               'artists': None,}
 
-    catalog['artwork'] = lt.newList()
-    catalog['artist'] = lt.newList('ARRAY_LIST',
+    catalog['artworks'] = lt.newList(datastructure=tad_list_type)
+    catalog['artists'] = lt.newList(datastructure=tad_list_type,
                                     cmpfunction=compareartists)
 
     return catalog
@@ -54,51 +59,21 @@ def newCatalog():
 # Funciones para agregar informacion al catalogo
 def addArtwork(catalog, artwork):
     # Se adiciona el libro a la lista de libros
-    lt.addLast(catalog['artwork'], artwork)
-    # Se obtienen los autores del libro
-    artists = artwork['artists'].split(",")
-    # Cada autor, se crea en la lista de libros del catalogo, y se
-    # crea un libro en la lista de dicho autor (apuntador al libro)
-    for artist in artists:
-        addArtworkArtist(catalog, artist.strip(), artwork)
+    lt.addLast(catalog['artworks'], artwork)
 
 
-def addArtworkArtist(catalog, artistname, artwork):
-    """
-    Adiciona un autor a lista de autores, la cual guarda referencias
-    a los libros de dicho autor
-    """
-    artists = catalog['artists']
-    posartist = lt.isPresent(artists, artistname)
-    if posartist > 0:
-        artist = lt.getElement(artists, posartist)
-    else:
-        author = newArtist(artistname)
-        lt.addLast(artists, author)
-    lt.addLast(author['artworks'], artwork)
-
-
-
+def addArtist(catalog, artist):
+    # Se adiciona el libro a la lista de libros
+    lt.addLast(catalog['artists'], artist)
 
 # Funciones para creacion de datos
 
-def newArtist(name):
-    """
-    Crea una nueva estructura para modelar los libros de
-    un autor y su promedio de ratings
-    """
-    artist = {'name': "", "artwork": None,  "average_rating": 0}
-    artist['name'] = name
-    artist['artqork'] = lt.newList('ARRAY_LIST')
-    return artist
-
-
-
-
-
-# Funciones para creacion de datos
+def ultimo_elemento(catalog):
+    lt.size(catalog['artworks'])
+    
 
 # Funciones de consulta
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareartists(authorname1, author):
@@ -106,4 +81,57 @@ def compareartists(authorname1, author):
         return 0
     return -1
 
+def cmpArtworkByDateAcquired(artwork1, artwork2):
+    """
+    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menor que el de artwork2
+    Args:
+    artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
+    artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
+    """
+    f1 = artwork1["DateAcquired"]
+    f2 = artwork2["DateAcquired"]
+    f1_lst = f1.split("-")
+    f2_lst = f2.split("-")
+    ret = None
+
+    if len(f1_lst) > len(f2_lst):
+        ret = False
+    elif len(f1_lst) < len(f2_lst):
+        ret = True
+    elif len(f1_lst) == 3 and len(f2_lst) == 3:
+        if f1_lst[0] < f2_lst[0]:
+            ret = True
+        elif f1_lst[0] > f2_lst[0]:
+            ret = False
+        elif f1_lst[0] == f2_lst[0]:
+            if f1_lst[1] < f2_lst[1]:
+                ret = True
+            elif f1_lst[1] > f2_lst[1]:
+                ret = False
+            else:
+                if f1_lst[2] < f2_lst[2]:
+                    ret = True
+                elif f1_lst[2] > f2_lst[2]:
+                    ret = False
+                else:
+                    ret = False
+    return ret
+
 # Funciones de ordenamiento
+
+def sort_adq(catalog, size , algo_type):
+    sub_list = lt.subList(catalog['artworks'], 1, size)
+    sub_list = sub_list.copy()
+    start_time = time.process_time()
+    if algo_type == 1:
+        sorted_list = ins.sort(sub_list, cmpArtworkByDateAcquired)
+    elif algo_type == 2:
+        sorted_list = sa.sort(sub_list, cmpArtworkByDateAcquired)
+    elif algo_type == 3:
+        sorted_list = mer.sort(sub_list, cmpArtworkByDateAcquired)
+    elif algo_type == 4:
+        sorted_list = qu.sort(sub_list , cmpArtworkByDateAcquired)
+    
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    return elapsed_time_mseg, sorted_list
