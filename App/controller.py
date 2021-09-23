@@ -23,6 +23,7 @@
 import config as cf
 import model
 import csv
+import datetime
 
 
 """
@@ -72,12 +73,27 @@ def loadArtists(catalog):
 
 # Funciones de ordenamiento
 
-def sort_adq(catalog, size , algo_type):
+def sort_adquisitions_date(catalog, algo_type , initial_date , final_date):
     """
     Ordena las obras de arte por fecha de adquisición
     """
-    return model.sort_adq(catalog, size , algo_type)
+    return model.sort_adquisitions_date(catalog, algo_type , initial_date , final_date)
+
+def sort_artist_date(catalog , algo_type , initial_year , final_year):
+    """
+    Ordena las obras de arte por fecha de adquisición
+    """
+    return model.sort_artist_date(catalog, algo_type , initial_year , final_year)
+
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def purchase_artworks(catalog , initial_date , final_date):
+
+    return model.purchase_artworks(catalog , initial_date , final_date)
+
+def find_artists(catalog , id2):
+
+    return model.find_artists(catalog , id2)
