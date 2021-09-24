@@ -97,3 +97,48 @@ def purchase_artworks(catalog , initial_date , final_date):
 def find_artists(catalog , id2):
 
     return model.find_artists(catalog , id2)
+
+def find_id_of_artist(catalog , artist_name):
+    #REQUISITO 3
+
+    return model.find_id_of_artist(catalog , artist_name)
+
+def list_of_artworks(catalog , id):
+    #REQUISITO 3
+
+    return model.list_of_artworks(catalog , id)
+
+def list_of_tecniques(list_of_artworks):
+    #REQUISITO 3
+
+    return model.list_of_tecniques(list_of_artworks)
+
+def most_used_technique(list_of_techniques):
+    #REQUISITO 3
+
+    return model.most_used_technique(list_of_techniques)
+
+def list_of_most_used_tecnique(most_used_tecnique , list_of_artworks):
+    #REQUISITO 3
+
+    return model.list_of_most_used_tecnique(most_used_tecnique , list_of_artworks)
+
+#Funciones Requisito 4
+
+def country_list(catalog):
+    return model.country_list(catalog)
+
+def country_list_sorted(country_list , algo_type):
+    return model.country_list_sorted(country_list , algo_type)
+
+def newDict_countries(country_list_sorted):
+    return model.newDict_countries(country_list_sorted)
+
+def insert_artworks(catalog , dict_countries):
+    return model.insert_artworks(catalog , dict_countries)
+
+def rank_countries(dict_countries):
+    return model.rank_countries(dict_countries)
+
+def order_rank_countries(dict_countries_ranked):
+    return model.order_rank_countries(dict_countries_ranked)

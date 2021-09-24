@@ -131,6 +131,54 @@ def printSortResults_artists(ord_artists, sample=3):
         print(size)
         print("El tamaño de la muestra excede el número de artistas.")
 
+def print_artists_artwork(artwork_list , list_of_unique_tecniques ,
+                                most_used_tec , list_most_used, 
+                                 sample):
+
+    #REQUISITO 3
+
+    size = lt.size(artwork_list)
+    size_2 = lt.size(list_of_unique_tecniques)
+    print("El total de obras del artista son: " + str(size))
+    print("El total de tecnicas utilizadas por el artista son: " + str(size_2))
+    print("La tecnica mas usada por el artista es: " + str(most_used_tec[0]))
+    print("Las obras hechas con esta técnica son: ")
+
+    j = 1
+    while j <= lt.size(list_most_used):
+        artwork = lt.getElement(list_most_used,j)
+        print('Titulo: ' + artwork["Title"] + ' Fecha de la obra: ' +
+                artwork["DateAcquired"] + ' Medio: ' + artwork["Medium"] +  ' Dimensiones ' + artwork["Dimensions"])
+        j+=1
+    
+    return None
+
+def print_countries_ranked(list_countries_ranked , dict_countries):
+    print("El top 10 de paises en el moma es: ")
+    sample = len(list_countries_ranked) - 10
+    counter = len(list_countries_ranked)
+    biggest_country = list_countries_ranked[counter - 1]
+    while counter > sample:
+        country = list_countries_ranked[counter - 1]
+        print(country)
+        counter -= 1
+    print("Las 3 primeras y las 3 ultimas obras de " + biggest_country[0] + " son: ")
+    biggest = dict_countries[biggest_country[0]]
+    print(biggest)
+    index = 1
+    while index < 4:
+        artwork = lt.getElement(biggest , index)
+        print('Titulo: ' + artwork["Title"] + ' Fecha de la obra: ' +
+                artwork["DateAcquired"] + ' Medio: ' + artwork["Medium"] +  ' Dimensiones ' + artwork["Dimensions"])
+        index += 1
+
+    index = lt.size(biggest)
+    while index > (lt.size(biggest) - 3):
+        artwork = lt.getElement(biggest , index)
+        print('Titulo: ' + artwork["Title"] + ' Fecha de la obra: ' +
+                artwork["DateAcquired"] + ' Medio: ' + artwork["Medium"] +  ' Dimensiones ' + artwork["Dimensions"])
+        index -= 1
+
 """
 Menu principal
 """
@@ -181,6 +229,50 @@ while True:
                                           str(result[0]))
         printSortResults_artworks(result[1] , purchased , catalog)
 
+
+    elif int(inputs[0]) == 4:
+
+        #REQUISITO 3
+
+        name_of_artist = input("Ingrese el nombre del artista: ")
+        algo_type = int(input("1- Insetion, 2 - Shell, 3 - Merge , 4 - Quick Sorts"))
+        id = controller.find_id_of_artist(catalog , name_of_artist)
+        # print("Para la muestra de", "1" , " elementos, el tiempo (mseg) es: ",
+                                          #str(result[0]))
+        list_of_artworks = controller.list_of_artworks(catalog , id)
+
+        list_of_tecniques = controller.list_of_tecniques(list_of_artworks)[0]
+
+        list_of_unique_tecniques = controller.list_of_tecniques(list_of_artworks)[1]
+
+        most_used_tec = controller.most_used_technique(list_of_tecniques)
+
+        most_used_tec0 = most_used_tec[0]
+
+        list_artworks_with_mostused = controller.list_of_most_used_tecnique(most_used_tec0 , 
+                                                        list_of_artworks)
+
+        print_artists_artwork(list_of_artworks , list_of_unique_tecniques ,
+                                    most_used_tec , 
+                                    list_artworks_with_mostused , 
+                                    lt.size(list_of_artworks))
+
+
+    elif int(inputs[0]) == 5:
+        algo_type = int(input("1- Insetion, 2 - Shell, 3 - Merge , 4 - Quick Sorts"))
+
+        country_list = controller.country_list(catalog)
+        country_list_sorted = controller.country_list_sorted(country_list , algo_type)
+        dict_countries = controller.newDict_countries(country_list_sorted)
+        dict_countries = controller.insert_artworks(catalog , dict_countries)
+        dict_countries_ranked = controller.rank_countries(dict_countries)
+        list_countries_ranked = controller.order_rank_countries(dict_countries_ranked)
+
+        print_countries_ranked(list_countries_ranked , dict_countries)
+
+        #for i in range(1, lt.size(country_list_sorted)):
+            #pais = lt.getElement(country_list_sorted , i)
+            #print(pais)
 
     else:
         sys.exit(0)

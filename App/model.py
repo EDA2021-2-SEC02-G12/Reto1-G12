@@ -75,6 +75,102 @@ def ultimo_elemento(catalog):
 
 # Funciones de consulta
 
+def find_id_of_artist(catalog , artist_name):
+    #REQUISITO 3
+
+    artists = lt.subList(catalog['artists'],1,lt.size(catalog['artists']))
+    artists = artists.copy()
+
+    id = None
+
+    for i in range(1 , lt.size(artists)):
+        artist = lt.getElement(artists , i)
+
+        if artist_name == artist["DisplayName"]:
+            id = artist["ConstituentID"]
+    
+    return id
+
+def list_of_artworks(catalog , id):
+    #REQUISITO 3
+    """
+    Recibe el catalogo y el id del artista y devuelve sus obras en una lista.
+    """
+    
+    original_list = catalog['artworks']
+    new_list = lt.newList()
+    i = 1
+    for i in range(1 , lt.size(original_list)+1):
+        artwork = lt.getElement(original_list , i)
+        artwork_artists_ids = (artwork["ConstituentID"])
+        artwork_artists_ids = (artwork_artists_ids.replace("[" , "")).replace("]" , "")
+        list_artwork_artists_ids = (artwork_artists_ids.split(","))
+        int_list_artwork_artists_ids = []
+        for id_artist_str in list_artwork_artists_ids:
+            int_list_artwork_artists_ids.append(int(id_artist_str))
+        for each_id in int_list_artwork_artists_ids:
+            if int(id) == each_id:
+                lt.addLast(new_list , artwork)
+    
+    return new_list
+
+def list_of_tecniques(list_of_artworks):
+    #REQUISITO 3
+
+    original_list = list_of_artworks
+    list_of_tecniques = lt.newList()
+    list_of_unique_tecniques = lt.newList()
+
+    for i in range(1 , lt.size(original_list)+1):
+        artwork = lt.getElement(original_list , i)
+        tecnique = artwork["Medium"]
+        lt.addLast(list_of_tecniques, tecnique)
+    
+    for j in range(1 , lt.size(list_of_tecniques)+1):
+        tecnique1 = lt.getElement(list_of_tecniques , j)
+        is_present = lt.isPresent(list_of_unique_tecniques , tecnique1)
+        if is_present == 0:
+            lt.addLast(list_of_unique_tecniques , tecnique1)
+    
+    return list_of_tecniques, list_of_unique_tecniques
+
+def most_used_technique(list_of_techniques):
+    #REQUISITO 3
+
+    original_list = list_of_techniques
+    most_used_technique = None
+    number_of_appeareances = 0
+
+    for i in range(1 , lt.size(original_list)+1):
+        tecnique = lt.getElement(original_list , i)
+        counter = 0
+        for j in range(1 , lt.size(original_list)+1):
+            tecnique2 = lt.getElement(original_list , j)
+            if tecnique == tecnique2:
+                counter += 1
+        if counter > number_of_appeareances:
+            number_of_appeareances = counter
+            most_used_technique = tecnique
+    
+    return most_used_technique , number_of_appeareances
+
+def list_of_most_used_tecnique(most_used_tecnique , list_of_artworks):
+    #REQUISITO 3
+
+    original_list = list_of_artworks
+    list_of_most_used_tecnique = lt.newList()
+
+    for i in range(1 , lt.size(original_list)+1):
+        artwork = lt.getElement(original_list , i)
+        if most_used_tecnique == artwork["Medium"]:
+            lt.addLast(list_of_most_used_tecnique , artwork)
+    
+    return list_of_most_used_tecnique
+
+
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareartists(authorname1, author):
@@ -321,4 +417,105 @@ def date_comparison(date1, date2):
         
     return ret_value
     
-    
+
+#FUNCIONES REQ 4:
+
+def country_list(catalog):
+    artists = catalog["artists"]
+    countries = lt.newList()
+    for i in range(1 , lt.size(artists)):
+        artist = lt.getElement(artists, i)
+        nationality = artist["Nationality"]
+        lt.addLast(countries , nationality)
+
+    return countries
+
+def country_list_sorted(country_list , algo_type):
+    countries = country_list
+    countries_filter = lt.newList()
+
+    for i in range(1 , lt.size(countries)+1):
+        country1 = lt.getElement(countries , i)
+        is_present = lt.isPresent(countries_filter , country1)
+        if is_present == 0:
+            lt.addLast(countries_filter , country1)
+        
+    sub_list = countries_filter
+        
+    if algo_type == 1:
+        sorted_list = ins.sort(sub_list, cmpCountryByAplhabet)
+    elif algo_type == 2:
+        sorted_list = sa.sort(sub_list, cmpCountryByAplhabet)
+    elif algo_type == 3:
+        sorted_list = mer.sort(sub_list, cmpCountryByAplhabet)
+    elif algo_type == 4:
+        sorted_list = qu.sort(sub_list , cmpCountryByAplhabet)
+        
+    return sorted_list
+
+
+def cmpCountryByAplhabet(country1, country2):
+    """
+    Devuelve verdadero (True) si country1 va antes que country 2.
+    Args:
+    country1
+    country2
+    """
+    ret = None 
+
+    if country1 < country2:
+        ret = True
+    else:
+        ret = False
+
+    return ret
+
+
+def newDict_countries(country_list_sorted):
+
+    catalog_countries = {}
+
+    for i in range(1, lt.size(country_list_sorted) + 1):
+        each_country = lt.getElement(country_list_sorted , i)
+        catalog_countries[each_country] = None
+        catalog_countries[each_country] = lt.newList(datastructure="ARRAY_LIST")
+
+    return catalog_countries
+
+def insert_artworks(catalog , dict_countries):
+    original_list = catalog["artworks"]
+    artists = catalog["artists"]
+
+    for i in range(1 , lt.size(original_list)+1):
+
+        artwork = lt.getElement(original_list , i)
+        artwork_artists_ids = (artwork["ConstituentID"])
+        artwork_artists_ids = (artwork_artists_ids.replace("[" , "")).replace("]" , "")
+        list_artwork_artists_ids = (artwork_artists_ids.split(","))
+        int_list_artwork_artists_ids = []
+        for id_artist_str in list_artwork_artists_ids:
+            int_list_artwork_artists_ids.append(int(id_artist_str))
+        for each_id in int_list_artwork_artists_ids:
+            for j in range(1 , lt.size(artists) + 1):
+                artist = lt.getElement(artists , j)
+                artist_id = int(artist["ConstituentID"])
+                if each_id == artist_id:
+                    nationality = artist["Nationality"]
+                    lt.addLast(dict_countries[nationality] , artwork)
+        
+    return dict_countries
+
+
+def rank_countries(dict_countries):
+    dict_countries_2 = {}
+    for country in dict_countries:
+         dict_countries_2[country] = lt.size(dict_countries[country])
+
+    return dict_countries_2
+
+def order_rank_countries(dict_countries_ranked):
+    list_countries = list(dict_countries_ranked.items())
+    list_countries.sort(key=lambda x:x[1])
+
+
+    return list_countries
